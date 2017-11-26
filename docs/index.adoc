@@ -20,6 +20,7 @@
 :listing-caption: Código
 :imagesdir: images
 :source-highlighter: pygments
+:pygments-style: manni
 
 = Reboot trabajo de FAST GITT 16/17
 

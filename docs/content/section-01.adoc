@@ -1,1 +1,26 @@
 == Introducción
+
+En esta guía veremos cómo realizar una aplicación web que cumpla con los
+requisitos del trabajo del curso 16/17 para la asignatura FAST (Grando en
+Ingeniería de las Tecnologías de las Telecomunicaciones de la Universidad de
+Sevilla).
+
+Sin embargo, en lugar de usar las tecnologías que se imparten durante el curso,
+usaremos otras más actuales. Si quieres ver el porqué, échale un ojo a este
+link:https://github.com/Bigomby/trabajo-fast-reboot[repositorio].
+
+=== Estructura del documento
+
+A lo largo de esta guía veremos lo siguiente:
+
+* *JavaScript ES2015*: Aquí veremos algunas de las nuevas características de
+JavaScript que no se ven durante el curso. Muchas de estas características
+mejoran la legibilidad del código así como disminuyen los _bugs_ que podemos
+tener.
+* *Enunciado*: Adaptaremos el enunciado de forma que nos quedaremos sólamente
+con el *qué hay que hacer* y eliminaremos las indicaciones del
+*cómo hay que hacerlo*.
+* *Backend*: Realizaremos toda la parte correspondiente al _backend_. Aquí
+veremos *Node.js* junto con *feathers.js* y *MongoDB*.
+* *Frontend*: Haremos la parte de _frontend_ con *Vue.js*. Tocaremos HTML, CSS3
+y JavaScript.
