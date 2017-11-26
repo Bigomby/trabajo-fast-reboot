@@ -1,0 +1,36 @@
+:doctype: book
+:firstname: Diego
+:lastname: Fernández Barrera
+:author: Diego Fernández
+:copyrights: Attribution-NonCommercial-NoDerivatives 4.0 International CC BY-NC-ND 4.0
+:lang: es
+:docinfo:
+:revnumber: 0.1.0
+:keywords: FAST, node.js, vue.js, javascript, trabajo, gitt
+:toc:
+:toc-title: Índice
+:toc-position: left
+:toclevels: 3
+:nofooter:
+:header:
+:icons: font
+:table-caption: Tabla
+:example-caption: Ejemplo
+:figure-caption: Figura
+:listing-caption: Código
+:imagesdir: images
+:source-highlighter: pygments
+
+= Reboot trabajo de FAST GITT 16/17
+
+include::content/section-01.adoc[]
+
+include::content/section-02.adoc[]
+
+include::content/section-03.adoc[]
+
+---
+
+[.text-right]
+[width="10%""]
+image::https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-sa.png[CC-BY-SA]

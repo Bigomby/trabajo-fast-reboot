@@ -1,0 +1,717 @@
+== Backend
+
+// = Reboot trabajo de FAST GITT 16/17
+//
+// == Introducción
+//
+// El trabajo consiste en la realización de una aplicación web que ayude a la
+// gestión del inventario y estado de reparación de una serie de dispositivos.
+// Los usuarios necesitan introducir su usuario y contraseña para poder acceder,
+// y hay dos tipos de usuarios:
+//
+// * *Clientes*: Pueden introducir dispositivos para reparar y ver el estado de
+// reparación de sus dispositivos.
+// * *Administrador*: Además puede modificar el estado de reparación de todos los
+// dispositivos y crear/modificar clientes (crear clientes nuevos y asignarle
+// contraseña, o modificar la contraseña de los clientes existentes).
+//
+// Los usuarios se identifican por su nombre de usuario, y los dispositivos por su
+// MAC. Cada usuario (puede ser administrador o no) tiene asociada una contraseña.
+// Cada dispositivo tiene asociado su dueño, un tipo de dispositivo y un estado de
+// reparación. Los tipos de dispositivo tienen un identificador y una descripción.
+// El estado de reparación puede tomar dos valores que representan arreglado o
+// pendiente.
+//
+// == Creación y configuración de la aplicación y del servidor
+//
+// Se debe crear una aplicación web, y para ello se deben seguir los siguientes
+// pasos:
+//
+// . Crear aplicación web (AppTrabajo)
+// . Añadir aplicación al servidor (Tomcat)
+// . Modificar web.xml de la aplicación (AppTrabajo)
+// . Modificar server.xml del servidor (Tomcat)
+// . Copiar postgresql-42.0.0.jar
+// . Descargar y extraer los ficheros iniciales
+//
+// === Crear aplicación web
+//
+// Dentro del workspace de Eclipse (workspace2, correspondiente al bloque II de la
+// asignatura), se debe crear una aplicación web equivalente a AppWeb y de nombre
+// AppTrabajo. Para ello:
+//
+// File > New > Dynamic Web Project
+// Observe las capturas a continuación:
+//
+// === Añadir aplicación al servidor (Tomcat)
+//
+// Una vez creada, se debe añadir al servidor:
+// Pestaña Server > Tomcat > Botón derecho > Add and Remove ...
+//
+// === Modificar web.xml de la aplicación (AppTrabajo)
+//
+// Modificar el fichero web.xml de la aplicación para que contenga la parte
+// correspondiente a la parte de CGI y Bases de datos igual que el de AppWeb:
+//
+// ====
+// <!-- CGI -->
+// <servlet>
+// <servlet-name>cgi</servlet-name>
+// ...
+// </servlet>
+// <servlet-mapping>
+// <servlet-name>cgi</servlet-name>
+// ...
+// </servlet-mapping>
+// <!-- Base de datos DataSource -->
+// <resource-ref>
+// ...
+// </resource-ref>
+// ====
+//
+// === Modificar server.xml del servidor (Tomcat)
+//
+// Modificar el fichero server.xml del servidor Tomcat para que el elemento
+// <Context docBase="AppTrabajo" sea igual al elemento <Context docBase="AppWeb"
+// (pero cambiando el nombre de la aplicación):
+//
+// === Copiar postgresql-42.0.0.jar
+//
+// Copiar el fichero postgresql-42.0.0.jar de la biblioteca de AppWeb a la
+// biblioteca de AppTrabajo AppWeb/WebContent/WEB-INF/lib/postgresql-42.0.0.jar
+//
+// === Descargar y extraer los ficheros iniciales
+//
+// Una vez creada la aplicación descargue el fichero FAST_AppTrabajoInic.tar.gz en
+// /home/dit y extráigalo con tar (debe haber creado la aplicación y haber cerrado
+// Eclipse).
+//
+// ====
+// dit@localhost:~$ tar xvfz FAST_AppTrabajoInic.tar.gz
+// ====
+//
+// El fichero tar.gz contiene ficheros iniciales para el directorio (y
+// subdirectorios):
+//
+// * workspace2/AppTrabajo/
+//
+// También contiene los ficheros:
+//
+// * borraTrabajo.sql
+// * creaTrabajo.sql
+// * registro.txt
+//
+// Algunos de los ficheros suministrados están incompletos, y deben ser completados
+// para que cumplan la funcionalidad especificada.
+//
+// == Base de datos
+//
+// === Tablas
+//
+// Se van a usar 3 tablas:
+//
+// * usuarios: con los campos
+//   ** id_usuario (clave primaria)
+//   ** password
+//   ** es_admin (valor lógico que indica si es administrador, si es falso es
+//   cliente)
+// * tipos: con los campos
+//   ** id_tipo (clave primaria)
+//   ** descripción
+// * dispositivos: con los campos
+//   ** mac (clave primaria)
+//   ** id_tipo (referencia a tipos)
+//   ** id_usuario (referencia a usuarios, indica su dueño)
+//   ** estado (valor lógico que indica si está arreglado, si es falso está
+//   pendiente)
+//
+// === Sistema gestor de base de datos
+//
+// Se va a utilizar como SGBD (sistema gestor de base de datos) postgresql, con
+// las órdenes start-postgresql y stop-postgresql (con ps aux | grep postgresql
+// puede ver si está ejecutándose):
+//
+// === Creación de las tablas
+//
+// Una vez que se está ejecutando el SGBD, para crear las tablas e introducir
+// algunos datos, o borrar las tablas use los siguientes ficheros:
+//
+// * borraTrabajo.sql
+// * creaTrabajo.sql
+//
+// == Ficheros
+//
+// === Ficheros y estructura de directorios
+//
+// Los ficheros y subdirectorios que debe haber en WebContent son:
+//
+// ==== Ficheros correspondientes al bloque I
+//
+// ===== Ficheros de admin
+//
+// Deben estar en el subdirectorio admin
+//
+// * usu.html
+// * js/fun_usu.js
+// * css/usu.css
+//
+// Al fichero usu.html hay que hacerle las siguientes modificaciones:
+//
+// * La cabecera h1 debe contener: Creación/modificación de usuario
+// * En el formulario, el atributo: action="usuarios.jsp"
+// * Añadir un elemento span junto al campo usuario: <span id="existe"></span>
+// * Añadir en head: <script src="../js/registro.js"></script>
+//
+// Al fichero fun_usu.js hay que hacerle las siguientes modificaciones (ver captura
+// en el apartado de “Página de editar (crear/modificar) usuarios”):
+//
+// * Añadir a la función inicial() el código necesario para que cuando en el campo
+// usuario del formulario se produzca el evento "change" se llame a una función que
+// mediante AJAX modifique el elemento con id="existe".
+// * Añadir la función que mediante AJAX envíe un mensaje GET a la URL
+// existeUsuario con el parámetro usu con el valor del campo usu del formulario.
+// Dependiendo del valor recibido en la respuesta (de tipo texto), que puede ser
+// "si" o "no", debe modificar el contenido del elemento con id="existe" para que
+// valga "Usuario existe" o "Usuario no existe". Gracias a esta función, cuando el
+// administrador vaya a crear/modificar a un usuario, cuando escriba un nombre de
+// usuario le aparecerá al lado un mensaje indicándole si el usuario existe o no.
+//
+// ===== Ficheros de clientes
+//
+// Deben estar en el subdirectorio clientes
+//
+// * dis.html
+// * js/fun_dis.js
+// * css/dis.css
+//
+// Al fichero usu.html hay que hacerle las siguientes modificaciones:
+//
+// * En el formulario, el atributo: action="creaDis.jsp"
+// * Añadir en head: <script src="../js/registro.js"></script>
+//
+// ===== Fichero de datos json
+//
+// Debe estar en el subdirectorio data
+//
+// * dispositivos.json
+//
+// === Ficheros en WebContent y WebContent/WEB-INF
+//
+// Los ficheros que debe haber en WebContent y WebContent/WEB-INF se han visto en
+// el apartado de ficheros y estructura de dirctorios.
+//
+// ==== Ficheros jsp y relacionados
+//
+// Los ficheros jsp se especifican en el apartado “Páginas jsp”, junto con sus
+// ficheros js y css.
+//
+// ==== Ficheros cgi
+//
+// El fichero WEB-INF/cgi/source/registro.c debe tener su ejecutable asociado a la
+// URL:
+//
+// ```
+// /AppTrabajo/cgi-bin/registro
+// ```
+//
+// Debe recibir los datos generados en js/registro.js (ver apartado “Páginas jsp”)
+// e ir añadiéndolo precedido de fecha y hora en el fichero /home/dit/registro.txt
+// (ver fichero registro.txt de ejemplo). El código puede basarse en del
+// ejemplo-cgi-3.c de la práctica P03 (ver apartado erratas y usar el código
+// corregido).
+// Necesitará funciones relacionadas con la fecha y hora:
+//
+// Necesitará un tamaño mayor para los datos:
+//
+// Para la fecha y hora usar el siguiente código:
+//
+// Los datos recibidos deben estar en data, ya descodificados (data sin el \n).
+//
+// == Listener
+//
+// === AppListener
+//
+// Al iniciar la aplicación AppTrabajo realiza las siguientes operaciones:
+//
+// . Crea un atributo de aplicación de nombre autor y cuyo valor es una cadena que
+// debe contener "Apellidos, Nombre - UVUS" correspondiente al alumno.
+// . Accede a la base de datos y leyendo de la tabla tipos, rellena un mapa de
+// nombre tipos (para cada elemento, la clave es el identificador de tipo y el
+// valor es la descripción).
+// . Crea un atributo de aplicación de nombre tipos y cuyo valor es el mapa
+// anterior (este atributo se usa para no tener que acceder continuamente a la base
+// de datos, ya que la tabla tipos no cambia durante la ejecución de la
+// aplicación).
+// . Crea un atributo de aplicación de nombre ds y cuyo valor es el objeto de tipo
+// DataSource usado para establecer la conexión (este atributo se usa para no tener
+// que hacer la llamada a lookup en otros accesos a la base de datos).
+// . Debe completar el código suministrado, donde aparecen comentarios con la
+// palabra COMPLETAR, para que cumpla lo especificado.
+//
+// == Filtros
+//
+// === FiltroMenu.java
+//
+// Captura la URL /menu, y realiza las siguientes operaciones:
+// Si la petición contiene usuario y contraseña:
+//
+// * accede a la base de datos, comprueba que sean correctos y en ese caso averigua
+// si es administrador.
+// * si ha comprobado que son correctos:
+//   ** crea un atributo de sesión de nombre usuario y cuyo valor es un objeto de
+//   la clase Usuario con los valores correctos.
+//   ** crea una cookie de nombre usuario y valor el identificador de usuario y la
+//   añade a la respuesta (para que mediante la función de js/registro.js se envíe
+//   también al servidor).
+//
+// Después de lo anterior (independientemente del resultado), busca un atributo de
+// sesión de nombre usuario (que se ha podido crear en el paso anterior o en otra
+// petición anterior del mismo usuario que ya puede estar autenticado):
+//
+// * Si lo encuentra:
+//   ** si el usuario es administrador: reenvía la petición al menú de
+//   administrador
+//   ** si el usuario no es administrador: reenvía la petición al menú de clientes
+//
+// Si no lo encuentra: reenvía la petición al inicio de la aplicación (es un
+// usuario que está intentando acceder al menú y no está autenticado).
+//
+// Debe completar el código suministrado, donde aparecen comentarios con la palabra
+// COMPLETAR, para que cumpla lo especificado.
+//
+// === FiltroAdmin.java
+//
+// Su objetivo es que sólo pueda acceder a las páginas de administrador (están el
+// directorio admin) los usuarios autenticados y que además sean administrador. De
+// esta forma en esas páginas no hace falta comprobar nada. Si no se usaran los
+// filtros, habría que incluir en cada página la comprobación correspondiente.
+//
+// Captura las peticiones con URL que empiecen con /admin/ y realiza las siguientes
+// operaciones. Busca un atributo de sesión de nombre usuario:
+//
+// * Si existe y es administrador deja seguir la petición
+// * En caso contrario ejecuta lo siguiente:
+//
+// === FiltroClientes.java
+//
+// Similar al anterior, pero con las URL que empiecen con /clientes/. En este caso
+// no hay que comprobar si es administrador (pero sí debe existir).
+//
+// == JavaBean
+//
+// ===  Usuario.java
+//
+// Es una clase con 3 propiedades:
+//
+// y los “setters” y “getters” correspondientes.
+//
+// == Páginas JSP
+//
+// === Páginas en WebContent
+//
+// ==== Página de inicio: index.jsp
+//
+// La primera vez que se accede a http://localhost:8080/AppTrabajo/ debe mostrar
+// la página de bienvenida con el botón para acceder (en el pie deben aparecer los
+// datos del alumno, que se habrán inicializado en el Listener):
+//
+// Cuando se pulse el botón acceder, se debe mostrar el formulario de acceso y se
+// podrán introducir los datos de usuario:
+//
+// Si se pulsa cancelar se debe ocultar el formulario de acceso.
+//
+// Si se pulsa entrar se debe acceder a la URL menu (que será capturada por el
+// filtro correspondiente), y si los datos son incorrectos se vuelve a la página
+// de inicio. El fichero suministrado cumple las especificaciones.
+//
+// ===== Ficheros asociados
+//
+// ====== js/conmutaAcceso.js
+//
+// Debe contener 2 funciones:
+//
+// * muestraFormAcceso(): muestra el elemento con id igual a “formacceso” (estilo
+// de display “block”, ya que inicialmente, por su estilo, estaba oculto) y pone el
+// foco en el elemento con id igual a “usuario”.
+// * ocultaFormAcceso(): oculta el elemento con id igual a “formacceso”.
+//
+// ====== js/registro.js
+//
+// Este fichero debe ser incluido por todas las páginas.
+//
+// Contiene el código necesario para que mediante AJAX se vaya enviando información
+// de las URLs visitadas por el usuario junto con las cookies (algo similar a
+// Google Analytics©).
+//
+// El fichero suministrado cumple las especificaciones. Puede consultar la función
+// encodeURIComponent en la documentación de w3schools:
+// https://www.w3schools.com/jsref/jsref_encodeURIComponent.asp
+//
+// ====== css/estilo.css
+//
+// Este es el fichero de estilo usado por todas las páginas a excepción de las del
+// bloque I. El fichero suministrado cumple las especificaciones.
+//
+// ==== Página de cabecera: cabecera.jsp
+//
+// Debe ser incluida por el resto de páginas jsp (a excepción de index.jsp) con la
+// etiqueta de acción <jsp:include.
+//
+// Debe incluir la directiva <%@page y un elemento <div> con identificado de valor
+// "cabecera". Dentro del div debe haber dos elementos <a> y un elemento <span>.
+//
+// Primer elemento <a>:
+//
+//  * referencia: /AppTrabajo/menu (pero debe utilizar una EL (Expression Language)
+// para obtener /AppTrabajo)
+// * clase: acceso
+// * identificador: volver
+// * contenido: Volver al menú
+//
+// Segundo elemento <a>:
+//
+// * referencia: /AppTrabajo/cerrar (pero debe utilizar una EL para obtener
+// /AppTrabajo)
+// * clase: acceso
+// * contenido: Cerrar sesión
+//
+// Elemento <span>:
+//
+// * clase: acceso
+// * identificador: nombreusuario
+// * contenido: (el identificador de usuario, obtenido mediante una EL a partir
+// del atributo de sesión de nombre usuario que se establece cuando un usuario se
+// autentica)
+//
+// En este fichero no se deben usar scriplets, sólo EL. La ventaja de usar EL para
+// obtener /AppTrabajo es que es un código reutilizable en otras aplicaciones.
+//
+// ==== Página de pie: pie.jsp
+//
+// Debe ser incluida por el resto de páginas jsp con la directiva <%@include.
+// Debe contener un elemento <div>:
+//
+// * identificador: pie
+// * contenido: (Apellidos, Nombre – UVUS del autor, obtenido mediante una EL a
+// partir del atributo de aplicación que se establece cuando la aplicación se
+// inicia)
+//
+// === Páginas en WebContent/clientes
+//
+// ==== Página de menú de clientes: menu.jsp
+//
+// Esta página es accedida a través del filtro menu. Se llega después de accecer a
+// index.jsp o desde el enlace que hay en cabecera.jsp. Lo que hay que completar
+// en la cabecera html es:
+//
+// * referencia a la página de estilos estilo.css (con el camino adecuado)
+// * incluir registro.js (con el camino adecuado)
+//
+// Lo que hay que completar al principio del cuerpo html es:
+//
+// * incluir cabecera.jsp (con la forma y el camino adecuado)
+//
+// Lo que hay que completar al final del cuerpo html es:
+//
+// * incluir pie.jsp (con la forma y el camino adecuado)
+//
+// ==== Página de “Ver sus dispositivos” de clientes: ver.jsp
+//
+// Esta página es accedida a través del enlace que hay en menu.jsp (tanto de
+// clientes como de administrador, ya que el administrador puede ver sus
+// dispositivos).
+//
+// Lo que hay que completar antes del documento html es, utilizando la etiqueta
+// <jsp:useBean, crear referencias a dos javaBeans:
+//
+// * primer JavaBean (para acceder al atributo ds creado al iniciar la aplicación):
+//   ** identificador: ds
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+// * segundo JavaBean (para acceder al atributo usuario creado en FiltroMenu):
+//   ** identificador: usuario
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+//
+// Lo que hay que completar en la cabecera html es:
+//
+// * referencia a la página de estilos estilo.css (con el camino adecuado)
+// * incluir registro.js (con el camino adecuado)
+//
+// Lo que hay que completar al principio del cuerpo html es:
+//
+// * incluir cabecera.jsp (con la forma y el camino adecuado)
+//
+// Lo que hay que completar después de establecer la conexión es:
+//
+// * Crear una cadena de nombre sql con la consulta adecuada para que muestre la
+// mac. descripción y estado de los dispositivos que pertenecen al usuario (debe
+// estar en el JavaBean usuario)
+//
+// Lo que hay que completar al final del cuerpo html es:
+//
+// * incluir pie.jsp (con la forma y el camino adecuado)
+//
+// ==== Página de “Añadir dispositivo” de clientes: creaDisp.jsp
+//
+// Esta página es accedida a través del formulario que hay en dis.html (tanto por
+// parte de clientes como de administrador, ya que el administrador puede añadir
+// sus dispositivos). Esta página comprueba que el parámetro mac es una dirección
+// válida (recuerde que en el servidor se deben comprobar las condiciones que se
+// suponen comprobadas en el navegador, por seguridad, porque en el navegador se
+// puede alterar el código ECMAScript). Si es correcto, se añade una fila a la
+// tabla dispositivos con los parámetros recibidos, el dueño (que es el usuario que
+// se habrá autenticado al iniciar la sesión) y el estado de reparación pendiente.
+//
+// Lo que hay que completar antes del documento html es, utilizando la etiqueta
+// <jsp:useBean, crear referencias a dos javaBeans:
+//
+// * primer JavaBean (para acceder al atributo ds creado al iniciar la aplicación):
+//   ** identificador: ds
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+// * segundo JavaBean (para acceder al atributo usuario creado en FiltroMenu):
+//   ** identificador: usuario
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+//
+// Lo que hay que completar dentro de la función compruebaMac es el código
+// necesario para que devuelva true si el parámetro es una dirección mac válida
+// (similar a la comprobación que se hacía en ECMAScript en el lado del navegador).
+//
+// Lo que hay que completar en la cabecera html es:
+//
+// * referencia a la página de estilos estilo.css (con el camino adecuado)
+// * incluir registro.js (con el camino adecuado)
+//
+// Lo que hay que completar al principio del cuerpo html es:
+//
+// * incluir cabecera.jsp (con la forma y el camino adecuado
+//
+// Lo que hay que completar después de establecer la conexión es:
+//
+// * Crear dos cadenas:
+//   ** mac: con el valor del parámetro correspondiente del formulario
+//   ** tipo: con el valor del parámetro correspondiente del formulario)
+//
+// Lo que hay que completar antes de usar la cadena sql es:
+//
+// * Crear una cadena de nombre sql con el contenido adecuado para que se añada a
+// la tabla dispositivos: la mac, el dueño, el tipo y el valor false.
+//
+// Lo que hay que completar dentro de <div id="resultado"> es:
+//
+// * una cabecera h2 con:
+//   ** atributo clase: "error" o "exito" dependiendo si la variable error es
+//   cierta o falsa.
+//   ** contenido: el valor de la cadena mensaje
+//
+// Lo que hay que completar al final del cuerpo html es:
+//
+// * incluir pie.jsp (con la forma y el camino adecuado)
+//
+// A esta página se accede desde el formulario:
+//
+// Si no hay errores:
+//
+// Si la mac está repetida:
+//
+// == Páginas en WebContent/admin
+//
+// ==== Página de menú de administrador: menu.jsp
+//
+// Esta página es accedida a través del filtro menu. Se llega después de accecer a
+// index.jsp o desde el enlace que hay en cabecera.jsp.
+//
+// Es similar al menú de clientes con algunos cambios:
+//
+// * cambiar título
+// * cambiar cabecera h1
+// * dejar los dos enlaces existentes y añadir dos enlaces adicionales:
+//   ** "admin/usu.html"
+//   ** "admin/modificar.jsp"
+//
+// ==== Página de editar (crear/modificar) usuarios: usuarios.jsp
+//
+// Esta página es accedida a través del formulario que hay en usu.html (como está
+// dentro del directorio admin, el filtro correspondiente sólo permite el acceso a
+// usuarios autenticados que sean administrador).
+//
+// Esta página comprueba que los parámetros usuario y contraseña cumplen los
+// criterios comprobados en el formulario (recuerde que en el servidor se deben
+// comprobar las condiciones que se suponen comprobadas en el navegador, por
+// seguridad, porque en el navegador se puede alterar el código ECMAScript). Si es
+// correcto, comprueba la existencia del usuario. si el usuario existe, modifica su
+// contraseña. Si el usuario no existe, lo crea con su contraseña (el usuario es
+// creado como no administrador). al final muestra todos los usuarios existentes.
+//
+// Lo que hay que completar antes del documento html es, utilizando la etiqueta
+// <jsp:useBean, crear referencias a dos javaBeans:
+//
+// * primer JavaBean (para acceder al atributo ds creado al iniciar la aplicación):
+//   ** identificador: ds
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+// * segundo JavaBean (cada propiedad debe tomar el valor del parámetro de nombre
+// coincidente):
+//   ** identificador: paramUsu
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+//
+// Lo que hay que completar dentro de la función compruebaContra es el código
+// necesario para que devuelva true si el parámetro es una contraseña válida
+// (similar a la comprobación que se hacía en ECMAScript en el lado del navegador).
+//
+// Lo que hay que completar en la cabecera html es:
+//
+// * referencia a la página de estilos estilo.css (con el camino adecuado)
+// * incluir registro.js (con el camino adecuado)
+//
+// Lo que hay que completar al principio del cuerpo html es:
+//
+// * incluir cabecera.jsp (con la forma y el camino adecuado)
+//
+// Lo que hay que completar antes de usar la cadena sql es:
+//
+// * Asignar a sql el valor adecuado para que la consulta haga lo que indica el
+// comentario que zparece en el código (hay que hacerlo varias veces)
+//
+// Lo que hay que completar dentro de <table id="lista"> es:
+//
+// * una columna con el nombre de usuario obtenido en la consulta
+//
+// Lo que hay que completar dentro de <div id="resultado"> es:
+//
+// * una cabecera h2 con:
+//   ** atributo clase: "error" o "exito" dependiendo si la variable error es
+//   cierta o falsa.
+//   ** contenido: el valor de la cadena mensaje
+//
+// Lo que hay que completar al final del cuerpo html es:
+//
+// * incluir pie.jsp (con la forma y el camino adecuado)
+//
+// A esta página se accede desde el formulario (suponiendo que el usuario existe):
+//
+// O desde el mismo formulario si el usuario no existe:
+//
+// Si el usuario no existe lo crea:
+//
+// Si el usuario existe lo modifica:
+//
+// ==== Página de modificar estados de los dispositivos: modificar.jsp
+//
+// Esta página es accedida a través del menú de administrador (como está dentro del
+// directorio admin, el filtro correspondiente sólo permite el acceso a usuarios
+// autenticados que sean administrador). Esta página muestra todos los dispositivos
+// existentes. A cada dispositivo le añade un botón que al pulsarlo cambia su
+// estado (mediante AJAX envía la petición modificar con la mac del dispositivo
+// como parámetro, y el valor recibido como respuesta, que es texto, lo pone como
+// nuevo estado del dispositivo). Esta página hace uso de las funciones ECMAscript
+// contenidas en fun_modificar.jsp (ver su especificación más adelante).
+//
+// Lo que hay que completar antes del documento html es, utilizando la etiqueta
+// <jsp:useBean, crear referencias a dos javaBeans:
+//
+// * primer JavaBean (para acceder al atributo ds creado al iniciar la aplicación):
+//   ** identificador: ds
+//   ** tipo: el adecuado
+//   ** ámbito: el adecuado
+// * segundo JavaBean (para acceder al atributo tipos creado al iniciar la aplicación):
+//   ** identificador: tipos
+//   ** tipo: "java.util.Map<String,String>"
+//   ** ámbito: el adecuado
+//
+// Lo que hay que completar en la cabecera html es:
+//
+// * referencia a la página de estilos estilo.css (con el camino adecuado)
+// * incluir registro.js (con el camino adecuado)
+// * incluir fun_modificar.js (con el camino adecuado)
+//
+// Lo que hay que completar al principio del cuerpo html es:
+//
+// * incluir cabecera.jsp (con la forma y el camino adecuado)
+//
+// Lo que hay que completar antes de usar la cadena sql es:
+//
+// * Asignar a sql el valor adecuado para que la consulta haga lo que indica el
+// comentario que aparece en el código (hay que hacerlo varias veces)
+//
+// Lo que hay que completar dentro de <table id=" resultados"> es una columna con
+// un elemento del tipo botón:
+//
+// * clase: el elemento debe pertenecer a la clase boton y a la clase bModificar
+// * valor: el de la cadena mac del dispositivo de esa fila
+// * contenido: Modificar estado
+//
+// Lo que hay que completar al final del cuerpo html es:
+//
+// * incluir pie.jsp (con la forma y el camino adecuado)
+//
+// En la siguiente captura se corresponde con la modificación del primer
+// dispositivo y muestra la petición AJAX:
+//
+// La siguiente captura se corresponde con la misma modificación, pero ahora se
+// muestra la respuesta:
+//
+// ===== Fichero asociado admin/js/fun_modificar.js
+//
+// Este fichero se carga desde modificar.jsp y es el que se encarga de las
+// peticiones AJAX. Lo primero que debe hacer cuando termine de cargarse la página
+// es asociar a todos los elementos de la clase “bModificar” (deben ser los botones
+// junto a cada dispositivo) una función para que cuando se pulse el elemento se
+// envíe una petición AJAX para que se ejecute ServletModificar con el parámetro
+// mac igual al valor del elemento (que debe ser la mac del dispositivo). Cuando
+// se reciba la respuesta hay que modificar el estado del dispositivo
+// correspondiente. Para ello debe buscar el elemento cuyo identificador es “mac-“
+// seguido de la mac correspondiente, y modificar el contenido para que sea el
+// valor recibido en la respuesta.
+//
+// En la petición usar:
+//
+// ====
+// xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+// ====
+//
+// == Servlets
+//
+// === ServletExisteUsuario
+//
+// Debe ejecutarse cuando la función AJAX de usu.html le envíe el identificador de
+// usuario y debe devolver un texto con valor "si" o "no", dependiendo si el
+// usuario existe en la tabla usuarios o no. El contenido de la respuesta debe ser
+// del tipo "text/plain", y para ello puede usar:
+//
+// ====
+// response.setContentType("text/plain");
+// ====
+//
+// Para devolver un “si” puede usar:
+//
+// ====
+// response.getWriter().print("si");
+// ====
+//
+//
+// === ServletCerrar
+//
+// Debe estar asociado a la URL "/cerrar " y debe cerrar la sesión y reenviar la
+// petición al inicio de la aplicación.
+//
+// Debe ejecutarse cuando el administrador quiere modificar el estado de un
+// dispositivo (es llamado mediante AJAX con la petición modificar desde la página
+// modificar.jsp). Recibe como parámetro la mac del dispositivo, accede a la tabla
+// dispositivos y obtiene el estado del mismo. Una vez obtenido actualiza el estado
+// del dispositivo en la tabla dispositivos (poniendo el complementario) y devuelve
+// el texto "Arreglado" si el nuevo valor es true o el texto "Pendiente" si el
+// nuevo valor es false. El contenido de la respuesta debe ser del tipo
+// "text/plain ".
+//
+// Lo que hay que completar antes de usar la cadena mac es:
+//
+// * Crear la cadena mac y asignarle el valor del parámetro
+//
+// Lo que hay que completar antes de usar la cadena sql es:
+//
+// * Asignar a sql el valor adecuado para que la consulta haga lo que indica el
+// comentario que aparece en el código (hay que hacerlo varias veces)
