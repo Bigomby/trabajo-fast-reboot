@@ -10,12 +10,32 @@
 **¡El trabajo de FAST hecho como si estuviésemos en 2017!**
 
 En este repositorio se realiza el trabajo de la asignatura FAST (Fundamentos de Aplicaciones y
-Servicios Telemáticos) del Grado en ingeniería de las tecnologías de las telecomunicaciones usando
-tecnología de esta década. El trabajo corresponde al curso 2016/2017.
+Servicios Telemáticos) del Grado en ingeniería de las tecnologías de las telecomunicaciones
+(Universidad de Sevilla) usando tecnologías usadas actualmente. El trabajo corresponde al curso
+2016/2017.
 
-## ¿Qué tiene de malo JSP y jQuery?
+## Índice
+
+* [¿Qué tiene de malo JSP y jQuery?](#qué-tiene-de-malo-jsp-y-jquery)
+  * [JSP](#jsp)
+  * [jQuery](#jquery)
+  * [BBDD SQL](#bbdd-sql)
+* [¿Qué alternativas tenemos?](#qué-alternativas-tenemos)
+  * [MongoDB](#mongodb)
+  * [Node.js](#nodejs)
+  * [express.js](#expressjs)
+  * [Vue.js](#vuejs)
+* [Stack MEVN](#stack-mevn)
+* [Despliegue de la aplicación](#despliegue-de-la-aplicación)
+
+## ¿Qué tiene de malo JSP, jQuery y las BBDD SQL?
 
 ### JSP
+
+<p align="center">
+<img src="http://i64.tinypic.com/2a6jzgh.png"></img>
+<b>Tendencia de búquedas en Google de JSP</b>
+</p>
 
 JSP es una tecnología que se considera obsoleta desde hace años, en 2017 esta tecnología está
 prácticamente muerta. Cuando JSP fue creado, la mayoría de las aplicaciones web se basaban en
@@ -88,6 +108,11 @@ sido diseñada para ello.
 
 ### Node.js
 
+<p align="center">
+<img src="http://i64.tinypic.com/o799p4.png"></img>
+<b>Tendencia de búquedas en Google de Node.js</b>
+</p>
+
 **Node.js** es una plataforma que nos permite desarrollar aplicaciones **interpretando** código
 JavaScript directamente en nuestro sistema operativo, al igual que el intérprete de Python
 interpreta el código de Python o la JVM (_Java Virtual Machine_) interpreta el byte-code de Java.
@@ -95,26 +120,21 @@ interpreta el código de Python o la JVM (_Java Virtual Machine_) interpreta el 
 Tanto **Node.js** como Chrome usan el motor de JavaScript **V8**. Podemos pensar que **Node.js** es
 como si sacáramos la parte de Chrome que ejecuta JavaSript para ejecutarlo fuera del navegador.
 
-### express.js + feathers.js
+### express.js
 
 **Node.js** nos da una plataforma sobre la que ejecutar código JavaScript, sin embargo, es
 recomendable utilizar un _framework_ que nos ayude a la hora de desarrollar una aplicación web. Uno
 de los _frameworks_ más usados para desarrollar aplicaciones web con **Node.js** es **express.js**.
 
 **express.js** nos proporciona una capa de abstracción sobre el uso de las librerías HTTP, de forma
-que podamos configurar autenticación, enrutado, parseo de peticiones, etc. Sin embargo,
-**express.js** es un _framework_ muy ligero, únicamente proporciona una fina capa sobre HTTP, no
-provee un marco completo sobre cómo estructurar nuestra aplicación. Aquí es donde entra en juego
-**feathers.js**.
-
-**feathers.js** es un _framework_ sobre **express.js** que nos da un marco completo de cómo debemos
-estructurar nuestras aplicaciones. Introduce conceptos como servicios, proporciona enrutado, nos
-permite el uso de websockets para aplicaciones en tiempo real y muchas más cosas. Este _framework_
-se caracterizar por ser muy modular y extensible. **feathers.js** es sólamente un pequeño núcleo
-sobre el cual se construyen plugins que nos dan ciertas funcionalidades, por ejemplo, acceso a una
-base de datos.
+que podamos configurar autenticación, enrutado, parseo de peticiones, etc.
 
 ### Vue.js
+
+<p align="center">
+<img src="http://i63.tinypic.com/20ivq75.png"></img>
+<b>Tendencia de búquedas en Google de Vue.js</b>
+</p>
 
 Por último, tenemos a **Vue.js** como tecnología para nuestro _frontend_. **Vue.js** puede usarse
 como una librería o como un _framework_. Para usar **Vue.js** bastaría con importar la librería y
