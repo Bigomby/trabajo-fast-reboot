@@ -21,6 +21,91 @@ tener.
 con el *qué hay que hacer* y eliminaremos las indicaciones del
 *cómo hay que hacerlo*.
 * *Backend*: Realizaremos toda la parte correspondiente al _backend_. Aquí
-veremos *Node.js* junto con *feathers.js* y *MongoDB*.
+veremos *Node.js* junto con *express.js* y *MongoDB*.
 * *Frontend*: Haremos la parte de _frontend_ con *Vue.js*. Tocaremos HTML, CSS3
 y JavaScript.
+
+=== Configuración del entorno
+
+Aunque en este documento se supodrá que se usa GNU/Linux (Ubuntu en concreto),
+es posible (aunque no se detallará) desarrollar la aplicación bajo Windows u
+OSX.
+
+==== Editor
+
+[.text-center]
+image::https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Atom_editor_logo.svg/2000px-Atom_editor_logo.svg.png[Atom, 300]
+
+Lo primero y más importante es disponer de algún editor que nos permita
+escribir código de forma cómoda. En principio sirve cualquier editor de texto,
+aunque es recomendable usar un editor de texto preparado para código.
+Algunos son:
+
+* link:https://atom.io/[Atom]
+* link:https://www.sublimetext.com/[Sublime]
+* link:http://www.vim.org/[vim]
+* link:https://www.gnu.org/software/emacs/[Emacs]
+* link:https://wiki.gnome.org/Apps/Gedit[Gedit]
+
+También podemos usar un IDE, que es un entorno de desarrollo completo. Para
+JavaScript, uno de los más completos es
+link:https://www.jetbrains.com/webstorm/[WebStorm].
+
+Veremos cómo instalar Atom:
+
+. Acceder a link:https://atom.io[https://atom.io] y descargar el fichero `.deb`
+si estamos en Ubuntu u otra distribución basada en Debian. Usaremos el `.rpm`
+para distrubuciones basadas en Red Hat, como Fedora o Centos.
+. Lo instalamos haciendo doble click. También podemos instalarlo desde la
+terminal (Ubuntu) con el comando `dpkg -i <nombre del fichero>.deb`
+. Iniciamos el editor y en la barra de herramientas hacemos click en
+`Edit->Preferences`.
+. Ahí hacemos click en `Install`. Y buscaremos e instalaremos los siguientes
+paquetes:
+  .. `ide-typescript`
+  .. `linter-eslint`
+
+Con esto ya tendremos Atom preparado para desarrollar JavaScript.
+
+==== Node.js
+
+El otro elemento principal que tenemos que tener instalado es `node.js`. La
+forma más cómoda es instalarlo usando `nvm`. Este script ayuda con la
+instalación de `node.js` ya que permite elegir qué versión instalar,
+además de ofrecer otras utilidades. Instalamos `nvm` ejecutando:
+
+[source]
+----
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+----
+
+Y para instalar la última versión estable de `node.js` ejecutamos:
+
+[source]
+----
+nvm install node
+nvm use node
+----
+
+WARNING: Es posible que después de instalar `nvm` necesites cerrar la terminal
+y volverla a abrir para poder ejecutar los dos últimos comandos.
+
+Para comprobar que tenemos `node.js` correctamente instalado, podemos
+ejecutar:
+
+[source]
+----
+node --version
+----
+
+Esto debería mostrarnos la versión actualmente instalada. También debería haber
+sido instalado `npm`, que es el gestor de paquetes de `node.js`. Este gestor nos
+permite instalar fácilmente las dependencias de un proyecto.
+
+[NOTE]
+====
+Cuando nos descargamos un proyecto de un repositorio, lo primero que habría que
+hacer es entrar a la carpeta del proyecto y ejecutar `npm install`. Este comando
+descargará automáticamente todas las dependencias y las almacenará en el
+directorio `node_modules`.
+====
