@@ -1,12 +1,15 @@
-== JavaScript (ES2015)
+== JavaScript (ES2015/ES6)
+
+[.text-center]
+image::http://wiki.uqbar.org/img/languages/ES6-ecmascript6-logo.jpg[js, 300]
 
 Antes de ponernos manos a la obra deberíamos repasar JavaScript ya que va a
 ser el lenguaje que nos va a acompañar durante todo el desarrollo de la
 aplicación web.
 
 Vamos a hacer incapié en las nuevas funcionalidades definidas
-en el estándar ES2015, que pasan desapercibidas en la asignatura, a pesar de
-mejorar mucho el lenguaje.
+en el estándar ES2015 (también conocido como ES6), que pasan desapercibidas en
+la asignatura, a pesar de mejorar mucho el lenguaje.
 
 Aunque existen versiones más modernas aún, todavía no están completamente
 soportadas en la mayoría de los navegadores.
