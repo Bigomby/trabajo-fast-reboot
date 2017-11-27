@@ -1,110 +1,229 @@
 == Backend
 
-// = Reboot trabajo de FAST GITT 16/17
-//
-// == Introducción
-//
-// El trabajo consiste en la realización de una aplicación web que ayude a la
-// gestión del inventario y estado de reparación de una serie de dispositivos.
-// Los usuarios necesitan introducir su usuario y contraseña para poder acceder,
-// y hay dos tipos de usuarios:
-//
-// * *Clientes*: Pueden introducir dispositivos para reparar y ver el estado de
-// reparación de sus dispositivos.
-// * *Administrador*: Además puede modificar el estado de reparación de todos los
-// dispositivos y crear/modificar clientes (crear clientes nuevos y asignarle
-// contraseña, o modificar la contraseña de los clientes existentes).
-//
-// Los usuarios se identifican por su nombre de usuario, y los dispositivos por su
-// MAC. Cada usuario (puede ser administrador o no) tiene asociada una contraseña.
-// Cada dispositivo tiene asociado su dueño, un tipo de dispositivo y un estado de
-// reparación. Los tipos de dispositivo tienen un identificador y una descripción.
-// El estado de reparación puede tomar dos valores que representan arreglado o
-// pendiente.
-//
-// == Creación y configuración de la aplicación y del servidor
-//
-// Se debe crear una aplicación web, y para ello se deben seguir los siguientes
-// pasos:
-//
-// . Crear aplicación web (AppTrabajo)
-// . Añadir aplicación al servidor (Tomcat)
-// . Modificar web.xml de la aplicación (AppTrabajo)
-// . Modificar server.xml del servidor (Tomcat)
-// . Copiar postgresql-42.0.0.jar
-// . Descargar y extraer los ficheros iniciales
-//
-// === Crear aplicación web
-//
-// Dentro del workspace de Eclipse (workspace2, correspondiente al bloque II de la
-// asignatura), se debe crear una aplicación web equivalente a AppWeb y de nombre
-// AppTrabajo. Para ello:
-//
-// File > New > Dynamic Web Project
-// Observe las capturas a continuación:
-//
-// === Añadir aplicación al servidor (Tomcat)
-//
-// Una vez creada, se debe añadir al servidor:
-// Pestaña Server > Tomcat > Botón derecho > Add and Remove ...
-//
-// === Modificar web.xml de la aplicación (AppTrabajo)
-//
-// Modificar el fichero web.xml de la aplicación para que contenga la parte
-// correspondiente a la parte de CGI y Bases de datos igual que el de AppWeb:
-//
-// ====
-// <!-- CGI -->
-// <servlet>
-// <servlet-name>cgi</servlet-name>
+=== Objetivo
+
+El trabajo consiste en la realización de una aplicación web que ayude a la
+gestión del inventario y estado de reparación de una serie de dispositivos.
+Los usuarios necesitan introducir su usuario y contraseña para poder acceder,
+y hay dos tipos de usuarios:
+
+* *Clientes*: Pueden introducir dispositivos para reparar y ver el estado de
+reparación de sus dispositivos.
+* *Administrador*: Además puede modificar el estado de reparación de todos los
+dispositivos y crear/modificar clientes (crear clientes nuevos y asignarle
+contraseña, o modificar la contraseña de los clientes existentes).
+
+Los usuarios se identifican por su nombre de usuario, y los dispositivos por su
+MAC. Cada usuario (puede ser administrador o no) tiene asociada una contraseña.
+Cada dispositivo tiene asociado su dueño, un tipo de dispositivo y un estado de
+reparación. Los tipos de dispositivo tienen un identificador y una descripción.
+El estado de reparación puede tomar dos valores que representan arreglado o
+pendiente.
+
+=== Creación y configuración de la aplicación y del servidor
+
+[.text-center]
+image:https://cdn.worldvectorlogo.com/logos/nodejs-icon.svg[node,150]
+image:https://i.cloudup.com/zfY6lL7eFa-3000x3000.png[express,400]
+
+==== Crear aplicación web
+
+Lo primero es crear un directorio donde vamos a introducir todo nuestro código.
+Le llamaremos, por ejemplo, `server`.
+
+.Crear una aplicación con express
+[source]
+----
+mkdir server
+cd server
+npm init
+----
+
+Este último comando nos preguntará una serie de cosas, podemos rellenarlo con
+los siguientes datos:
+
+====
+package name: (server)
+[teal]#*fast-reboot-server*#
+
+version: (1.0.0)
+[teal]#*0.1.0*#
+
+description:
+[teal]#*El trabajo de FAST como si fuese 2017*#
+
+entry point: (index.js)
+[teal]#*src/index.js*#
+
+test command:
+
+git repository:
+
+keywords:
+
+author: Diego Fernández Barrera
+[teal]#*<Introduce tu nombre>*#
+
+license: (ISC)
+====
+
+Esto nos habrá generado un fichero llamado `package.json` que contiene
+información sobre nuestra aplicación. En este fichero también se listarán las
+dependencias para que puedan ser instaladas posteriormente.
+
+[NOTE]
+====
+Si más adelante queremos instalar todas las dependencias del proyecto,
+en el directorio `server` ejecutaremos:
+
+----
+npm install
+----
+
+Este comando mirará las dependencias listadas en el fichero `package.json` y las
+instalará en la carpeta `node_modules`.
+====
+
+==== Instalación de dependencias
+
+A continuación vamos a instalar algunas dependencias ejecutando el siguiente
+comando:
+
+[source]
+----
+npm install --save express <1>
+npm install --save-dev babel-cli babel-preset-es2015 nodemon eslint <2>
+----
+
+<1> Se instala `express.js`. Usando `--save` se añade el módulo a la lista de
+dependencias en el fichero `package.json`.
+<2> Se instalas `babel-cli` y `babel-preset-es2015` y otros se añaden a la lista
+de dependencias de desarrollo. Las dependencias de desarrollo son opcionales,
+pues sólo son necesarias si vamos a realizar tareas de desarrollo.
+
+Esto creará una carpeta llamada `node_modules` en nuestro proyecto donde se
+instalarán estos módulos y sus dependencias.
+
+Babel:: Es un módulo que nos permite usar nuevas funciones
+de JavaScript que aún no han sido implementadas.
+Babel se encarga de convertir el código que escribimos a código antiguo que
+es compatible con navegadores o versiones de `node.js` anteriores.
+
+ESLint:: Es un _linter_ que nos permite comprobar que nuestro código cumple unas
+normas de estilo impuestas. También puede comprobar si hay algunos errores
+antes de que ejecutemos nuestro código.
+
+Nodemon:: Es un módulo que ejecuta nuestro servidor y cuando detecta cambios
+en el código fuente lo reinicia. Muy útil cuando estamos desarrollando.
+
+==== Configuración de _scripts_
+
+Ahora vamos a modificar la sección `scripts` de nuestro fichero `package.json`
+para que quede de la siguiente forma:
+
+.Sección scripts de `package.json`
+[source, javascript]
+----
 // ...
-// </servlet>
-// <servlet-mapping>
-// <servlet-name>cgi</servlet-name>
+"scripts": {
+  "dev": "nodemon -w src --exec \"babel-node src --presets es2015\"",
+  "build": "babel src -s -D -d dist --presets es2015",
+  "prestart": "npm run -s build",
+  "start": "node dist",
+  "test": "eslint src"
+},
 // ...
-// </servlet-mapping>
-// <!-- Base de datos DataSource -->
-// <resource-ref>
-// ...
-// </resource-ref>
-// ====
-//
-// === Modificar server.xml del servidor (Tomcat)
-//
-// Modificar el fichero server.xml del servidor Tomcat para que el elemento
-// <Context docBase="AppTrabajo" sea igual al elemento <Context docBase="AppWeb"
-// (pero cambiando el nombre de la aplicación):
-//
-// === Copiar postgresql-42.0.0.jar
-//
-// Copiar el fichero postgresql-42.0.0.jar de la biblioteca de AppWeb a la
-// biblioteca de AppTrabajo AppWeb/WebContent/WEB-INF/lib/postgresql-42.0.0.jar
-//
-// === Descargar y extraer los ficheros iniciales
-//
-// Una vez creada la aplicación descargue el fichero FAST_AppTrabajoInic.tar.gz en
-// /home/dit y extráigalo con tar (debe haber creado la aplicación y haber cerrado
-// Eclipse).
-//
-// ====
-// dit@localhost:~$ tar xvfz FAST_AppTrabajoInic.tar.gz
-// ====
-//
-// El fichero tar.gz contiene ficheros iniciales para el directorio (y
-// subdirectorios):
-//
-// * workspace2/AppTrabajo/
-//
-// También contiene los ficheros:
-//
-// * borraTrabajo.sql
-// * creaTrabajo.sql
-// * registro.txt
-//
-// Algunos de los ficheros suministrados están incompletos, y deben ser completados
-// para que cumplan la funcionalidad especificada.
+----
+
+Los `scripts` son comandos que podemos ejecutar con `npm` de forma cómoda.
+Veamos los que hemos añadido:
+
+* `npm run dev`: Usa `nodemon` para ejecutar nuestro servidor en modo
+desarrollo, es decir, detectará cambios en el código fuente y se reiniciará
+automáticamente.
+* `npm run build`: Generará una carpeta llamada `dist/` que contendrá el
+código javascript que se ha generado con `babel`, o sea, el código compatible
+con versiones anteriores de JavaScript. *Este es el código que nosotros
+ejecutaremos*.
+* `npm start`: Ejecuta el servidor. Atomáticamente se ejecutará el comando
+`npm prestart`, que se asegura de generar el código con `babel`.
+* `npm test`: Ejecuta los tests. En este caso comprueba que el código cumpla
+las normas de estilo usando `eslint`.
+
+Para evitar que `git` realice control de versiones sobre la carpeta
+`node_modules` y la carpeta `dist`, crearemos un fichero llamado `.gitignore`
+en nuestro proyecto con el siguiente contenido:
+
+.`.gitignore`
+----
+node_modules/
+dist/
+----
+
+==== Ejecución del servidor
+
+Por último creamos un fichero llamado `index.js` en la carpeta `src`, en él
+introducimos lo siguiente:
+
+[source, javascript]
+----
+import http from 'http'; <1>
+import express from 'express'; <2>
+
+const app = express(); <3>
+const server = http.createServer(app); <4>
+
+app.get('/', (req, res) => { <5>
+    res.end('Hola mundo');
+});
+
+server.listen(8080); <6>
+----
+
+<1> Se importa el módulo `http`, que es un módulo nativo de `node.js`.
+<2> Se importa el módulo `express.js`.
+<3> Se crea una instancia de la aplicación `express.js`.
+<4> Se crea un servidor `http` y se le pasa como parámetro la instancia de la
+aplicación `express.js`. La función `createServer` recibe como parámetro una
+función que se encarga de manejar las peticiones. En este caso estamos delegando
+este trabajo en `express.js`.
+<5> Configuramos una función que se encarge de manejar las peticiones `GET` a la
+ruta `/`. Esta función simplemente devuelve la cadena "Hola Mundo".
+<6> Por último ponemos a escuchar nuestra aplicación en el puerto `8080`.
+
+Para comprobar que todo funciona, ejecutamos nuestra aplicación con el comando:
+
+.Ejecutar servidor
+[source]
+----
+npm start
+----
+
+.Ejecutar servidor con recarga automática
+[source]
+----
+npm run dev
+----
+
+Podemos comprobar en un navegador que todo funciona correctamente entrando a la
+URL link:http://localhost:8080[]. También podemos usar el comando `curl` de la
+siguiente forma:
+
+.Comprobando que el servidor web responde
+====
+[source]
+----
+curl http://localhost:8080/
+----
+----
+Hola mundo
+----
+====
+
 //
 // == Base de datos
+//
+// Ahora que tenemos el esqueleto de nuestra
 //
 // === Tablas
 //
